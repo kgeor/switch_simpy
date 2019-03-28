@@ -1,16 +1,12 @@
-"""
-    A bit more detailed set of components to use in packet switching
-    queueing experiments.
-    Copyright 2014 Greg M. Bernstein
-    Released under the MIT license
-"""
-
 import simpy
 import random
 import copy
 from simpy.core import BoundClass
 from simpy.resources import base
 from heapq import heappush, heappop
+
+global CAMtable={}
+global ports=[]
 
 
 class Packet(object):
@@ -44,7 +40,8 @@ class Packet(object):
         return "id: {}, src: {}, time: {}, size: {}".\
             format(self.id, self.src, self.time, self.size)
 
-
+#генерировать(добавить) свойство порт - сразу обозначает порт коммутатора и MAC
+#добавить в список ports, далее пройти по ней в цикле инициализации CAM таблицы и записать в словарь CAM
 class PacketGenerator(object):
     """ Generates packets with given inter-arrival time distribution.
         Set the "out" member variable to the entity to receive the packet.
@@ -64,14 +61,15 @@ class PacketGenerator(object):
 
 
     """
-    def __init__(self, env, id,  adist, sdist, initial_delay=0, finish=float("inf"), flow_id=0):
+    def __init__(self, env, id, port, adist, sdist, initial_delay=0, finish=float("inf"), flow_id=0):
         self.id = id
         self.env = env
+        self.port = port
         self.adist = adist
         self.sdist = sdist
         self.initial_delay = initial_delay
         self.finish = finish
-        self.out = None
+        self.out = None (port?) # сразу кидать в порт входа
         self.packets_sent = 0
         self.action = env.process(self.run())  # starts the run() method as a SimPy process
         self.flow_id = flow_id
@@ -84,10 +82,11 @@ class PacketGenerator(object):
             # wait for next transmission
             yield self.env.timeout(self.adist())
             self.packets_sent += 1
-            p = Packet(self.env.now, self.sdist(), self.packets_sent, src=self.id, flow_id=self.flow_id)
+            p = Packet(self.env.now, self.sdist(), self.packets_sent, src=self.id, dst=, flow_id=self.flow_id)
             self.out.put(p)
 
-
+#объединить надо бы с генератором в клиент-сервер
+# хотя можно просто на выходе с порта коммутатора получать данные и не париться
 class PacketSink(object):
     """ Receives packets and collects delay information into the
         waits list. You can then use this list to look at delay statistics.
@@ -139,7 +138,22 @@ class PacketSink(object):
             if self.debug:
                 print(pkt)
 
-
+class SwitchM(object):
+    def __init__(self, env, mac):
+        self.env=env
+        self.mac=mac
+        
+    def run(self):
+        for i in clients:
+            
+        while True:
+            msg = (yield self.store.get())
+            self.busy = 1
+            
+            if not msg.src in CAMtable:
+                CAMtable[msg.src]=msg.port
+                
+                # Актуальный способ.
 class SwitchPort(object):
     """ Models a switch output port with a given rate and buffer size limit in bytes.
         Set the "out" member variable to the entity to receive the packet.
@@ -176,6 +190,8 @@ class SwitchPort(object):
             msg = (yield self.store.get())
             self.busy = 1
             self.byte_size -= msg.size
+            if not msg.src in CAMtable:
+                CAMtable[msg.src]=msg.port
             yield self.env.timeout(msg.size*8.0/self.rate)
             self.out.put(msg)
             self.busy = 0
