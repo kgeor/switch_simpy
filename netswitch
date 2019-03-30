@@ -5,8 +5,7 @@ from simpy.core import BoundClass
 from simpy.resources import base
 from heapq import heappush, heappop
 
-global CAMtable={}
-global ports=[]
+
 
 
 class Packet(object):
@@ -28,7 +27,7 @@ class Packet(object):
         flow_id : int
             small integer that can be used to identify a flow
     """
-    def __init__(self, time, size, id, src="a", dst="z", flow_id=0):
+    def __init__(self, time, size, id, src='', dst='', flow_id=0):
         self.time = time
         self.size = size
         self.id = id
@@ -61,15 +60,18 @@ class PacketGenerator(object):
 
 
     """
-    def __init__(self, env, id, port, adist, sdist, initial_delay=0, finish=float("inf"), flow_id=0):
+    def __init__(self, env, id, port, portsradist, sdist, initial_delay=0, finish=float("inf"), flow_id=0):
         self.id = id
         self.env = env
         self.port = port
+        self.ports = []
         self.adist = adist
         self.sdist = sdist
         self.initial_delay = initial_delay
         self.finish = finish
-        self.out = None (port?) # сразу кидать в порт входа
+        self.out = random.choice(ports)# сразу кидать в порт входа
+        while self.out == self.port:
+            self.out = random.choice(ports)
         self.packets_sent = 0
         self.action = env.process(self.run())  # starts the run() method as a SimPy process
         self.flow_id = flow_id
@@ -82,7 +84,7 @@ class PacketGenerator(object):
             # wait for next transmission
             yield self.env.timeout(self.adist())
             self.packets_sent += 1
-            p = Packet(self.env.now, self.sdist(), self.packets_sent, src=self.id, dst=, flow_id=self.flow_id)
+            p = Packet(self.env.now, self.sdist(), self.packets_sent, src=self.port, dst=self.out, flow_id=self.flow_id)
             self.out.put(p)
 
 #объединить надо бы с генератором в клиент-сервер
@@ -190,8 +192,6 @@ class SwitchPort(object):
             msg = (yield self.store.get())
             self.busy = 1
             self.byte_size -= msg.size
-            if not msg.src in CAMtable:
-                CAMtable[msg.src]=msg.port
             yield self.env.timeout(msg.size*8.0/self.rate)
             self.out.put(msg)
             self.busy = 0
