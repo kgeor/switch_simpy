@@ -39,8 +39,7 @@ class Packet(object):
         return "id: {}, src: {}, time: {}, size: {}".\
             format(self.id, self.src, self.time, self.size)
 
-#генерировать(добавить) свойство порт - сразу обозначает порт коммутатора и MAC
-#добавить в список ports, далее пройти по ней в цикле инициализации CAM таблицы и записать в словарь CAM
+
 class PacketGenerator(object):
     """ Generates packets with given inter-arrival time distribution.
         Set the "out" member variable to the entity to receive the packet.
@@ -60,7 +59,7 @@ class PacketGenerator(object):
 
 
     """
-    def __init__(self, env, id, port, portsradist, sdist, initial_delay=0, finish=float("inf"), flow_id=0):
+    def __init__(self, env, id, port, ports, adist, sdist, initial_delay=0, finish=float("inf"), flow_id=0):
         self.id = id
         self.env = env
         self.port = port
