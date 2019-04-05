@@ -60,7 +60,7 @@ class PacketGenerator(object):
 генерация пакетов через время adist с заполнением полей пакета.
 Адресация  - по портам
     """
-    def __init__(self, env, id, port, ports=[], adist, sdist, initial_delay=0, finish=float("inf"), flow_id=0):
+    def __init__(self, env, id, port, ports, adist, sdist, initial_delay=0, finish=float("inf"), flow_id=0):
         self.id = id
         self.env = env
         self.port = port #  порт, к которому присоединен генератор
@@ -141,22 +141,6 @@ class PacketSink(object):
             if self.debug:
                 print(pkt)
 
-class SwitchM(object):
-    def __init__(self, env, mac):
-        self.env=env
-        self.mac=mac
-        
-    def run(self):
-        for i in clients:
-            
-        while True:
-            msg = (yield self.store.get())
-            self.busy = 1
-            
-            if not msg.src in CAMtable:
-                CAMtable[msg.src]=msg.port
-                
-                # Актуальный способ.
 class SwitchPort(object):
     """ Models a switch output port with a given rate and buffer size limit in bytes.
         Set the "out" member variable to the entity to receive the packet.
