@@ -18,23 +18,24 @@ def constSize():
 
 class Switch:
     def __init__(self, env, num, rate, buffer):
-      self.num=num
+      self.num=num #num of ports
       self.env=env
       self.rate=rate
-      self.buffer=buffer
+      self.buffer=buffer # size of buffer in bytes
       self.i=0
       self.port=[None]*num
+      # generate empty class
       class pt():
           pass
       while self.i < self.num:
-        prt=pt()
-        prt.inner=SwitchPort(env, rate, buffer)
-        prt.outer=SwitchPort(env, rate, buffer)
-        self.port[self.i]=prt
+        self.prt=pt()
+        self.prt.inner=SwitchPort(env, rate, buffer)
+        self.prt.outer=SwitchPort(env, rate, buffer)
+        self.port[self.i]=self.prt
         self.i+=1
-        
+      # все inner должны быть связаны друг с другом  
 class PC:
-  def __init__(self, env, clientnum, srcport, dstport, time, size, finish=30, flow=10, rec_arrivals=False,  absolute_arrivals=True, rec_waits, debug=True, selector=None ):
+  def __init__(self, env, clientnum, srcport, dstport, time=constArrival, size=constSize, finish=30, flow=10, rec_arrivals=False,  absolute_arrivals=True, rec_waits, debug=True, selector=None ):
     self.env=env
     self.clientnum=clientnum
     self.srcport=srcport
@@ -53,14 +54,15 @@ class PC:
       pass
     self.i=0
     while self.i < self.clientnum:
-      node=pc()
-      node.gen=PacketGenerator(self.env, self.srcport, self.dstport, self.time, self.size, self.finish, self.flow)
+      self.node=pc()
+      self.node.gen=PacketGenerator(self.env, self.srcport, self.dstport, self.time, self.size, self.finish, self.flow)
       # коннект к порту-источнику (для каждой пары gen-sink прописать полный путь)
-      node.sink=PacketSink(self.env, self.rec_arrivals, self.absolute_arrivals, self.rec_waits, self.debug, self.selector)
+      self.node.sink=PacketSink(self.env, self.rec_arrivals, self.absolute_arrivals, self.rec_waits, self.debug, self.selector)
       self.server[self.i]=node
       self.i+=1
       
 class wiring:
+  def __init__(self,env,pc,switchport)
   
 '''
   def __init__(self, env, num, rate, buffer):
