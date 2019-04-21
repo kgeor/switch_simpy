@@ -34,6 +34,9 @@ class Switch:
         self.port[self.i]=self.prt
         self.i+=1
       # все inner должны быть связаны друг с другом  
+      # хотя пакет приходит на outer  и пересылается на inner
+      # выходит цепочка Источник - Outer - Inner - Приемник
+      # надо определить два момента - с какого Inner и какому приемнику слать
 class PC:
   def __init__(self, env, clientnum, srcport, dstport, time=constArrival, size=constSize, finish=30, flow=10, rec_arrivals=False,  absolute_arrivals=True, rec_waits, debug=True, selector=None ):
     self.env=env
@@ -56,8 +59,9 @@ class PC:
     while self.i < self.clientnum:
       self.node=pc()
       self.node.gen=PacketGenerator(self.env, self.srcport, self.dstport, self.time, self.size, self.finish, self.flow)
-      # коннект к порту-источнику (для каждой пары gen-sink прописать полный путь)
+      # коннект к порту-источнику Outer (для каждой пары gen-sink прописать полный путь)
       self.node.sink=PacketSink(self.env, self.rec_arrivals, self.absolute_arrivals, self.rec_waits, self.debug, self.selector)
+      # коннект к Inner
       self.server[self.i]=node
       self.i+=1
       
