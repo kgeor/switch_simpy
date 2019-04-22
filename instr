@@ -1,0 +1,5 @@
+class Clent-port(num,rate,buf)
+# create port(with in/out rate buf) and num of clients 
+# 
+class Switch(Client-port,  )
+# build switch and learn all clients
