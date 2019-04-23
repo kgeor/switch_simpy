@@ -9,14 +9,20 @@ import random
 sys.path.append('/content/drive/My Drive/python/modules')
 from switchnet import PacketGenerator, PacketSink, SwitchPort
 
-def constArrival():
-    return random.random()    # time interval
+class Param(object):
+  
+    def constArrival():
+        return random.random()    # time interval
+    def constSize():
+        return 100.0  # bites
+    env=simpy.Environment()
+    rate=100
+    buffer=200
+    numports=4
+    clients=4
 
-def constSize():
-    return 100.0  # bites
 
-
-class Switch:
+class Switch(Param):
     def __init__(self, env, num, rate, buffer):
       self.num=num #num of ports
       self.env=env
