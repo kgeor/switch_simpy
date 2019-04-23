@@ -1,5 +1,13 @@
-class Clent-port(num,rate,buf)
+And what if i create class with constants and other functional classes will inherit it? 
+
+
+class topo(Client-port)(num,rate,buf)
 # create port(with in/out rate buf) and num of clients 
-# 
+# s
 class Switch(Client-port,  )
 # build switch and learn all clients
+Self.port[i].clients[] - its not neccessary to work eith clients directly. 
+#we choose src client for tgen and randomize for dst client 
+Class trafficgen(Client-port.ports
+   #initialize in cycle: foreach client in topo1.clients
+#tg1=trafficgen(env, src=client.id, dst=random.choice
