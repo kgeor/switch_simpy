@@ -35,7 +35,7 @@ DISTRIB
 
 Class clients:
 Def init(self, num, ports) 
-Num, ports - равноразмерные списки
+Self.Num=params.NUM, ports - равноразмерные списки, одному порту-список клиентов
 
 Class switchport(rate, bufsize):
 Self.in=None #буфер приходящих извне пакетов
@@ -48,6 +48,10 @@ i=p.cam[pkt.dst]
 SwitchPort[i-1].out=pkt
 #мб добавить маааленькую рандомную задержку
 
+class wiring:
+foreach cl in CAM:
+Swport[cl].in=cl.gen
+cl.sink=Swport[cl].out
 
 Вообще порядок:
 Опред кво портов и их парам(с б) 
