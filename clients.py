@@ -31,7 +31,8 @@ Class params:
 PORTS=10
 RATE=
 BUF=
-DISTRIB
+DISTRIB_SIZE=
+DISTRIB_TIME=
 
 Class clients:
 Def init(self, num, ports) 
