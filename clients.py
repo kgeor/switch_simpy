@@ -1,53 +1,62 @@
 import random
-class pkt:
-  num=10 # ports
-  cam={}
+class params:
+  PORTS=10
+  RATE=100
+  BUF=200
+  DISTRIB=None
+  CAM={}
   ports={}
-  for i in range(num):
-    clients=random.randint(1,4)
-    cl=[None]*clients
-    for j in range(clients):
+class topo:
+  for i in range(params.PORTS):
+    cl=[None]*random.randint(1,4)
+    for j in range(len(cl)):
       idc='p'+str(i+1)+'c'+str(j+1)
-      cam[idc]=i+1
+      params.CAM[idc]=i+1
       cl[j]=idc
-    ports[i+1]=cl #SwitchPort()
+    params.ports[i+1]=cl #SwitchPort()
 
-  src=random.choice(ports[random.randint(1,num)]) # its true, we generally randomize the port, not client
-  #sport=port[cam[src]]
-  dst=random.choice(list(cam.keys()))
-  
-  while (src[1]==dst[1])&(src[2]==dst[2]):
-    dst=random.choice(list(cam.keys()))
+  src=random.choice(params.ports[random.randint(1,params.PORTS)]) # its true, we generally randomize the port, not client
+  dst=random.choice(params.ports[random.randint(1,params.PORTS)])
+  #sport=port[params.CAM[src]]
 
-P=pkt()    
+  while (src[1:2]==dst[1:2]):
+    dst=random.choice(params.ports[random.randint(1,params.PORTS)])
+
+p=topo()    
 print(p.src)
 print(p.dst)
-print(a.ports)
+print(a.params.ports)
 
-CAM и Port словари сделать глобальными. Возможно инициализировать их в спец классе build
+class wiring:
+foreach cl in CAM:
+Swport[cl].in=cl.gen
+cl.sink=Swport[cl].out
+
+'''
+params.CAM и Port словари сделать глобальными. Возможно инициализировать их в спец классе build
 Класс switchport перевести в buffer, новый класс switcport  имеет два атрибута, равные экземплярам класса buffer
 Сделать класс switch, который соответственно будет сопоставлять порт входа.in с портом выхода.out:
-Class params:
-PORTS=10
-RATE=
-BUF=
-DISTRIB
+
 
 Class clients:
-Def init(self, num, ports) 
-Num, ports - равноразмерные списки
+Def init(self, num, params.ports) 
+Num, params.ports - равноразмерные списки
 
 Class switchport(rate, bufsize):
 Self.in=None #буфер приходящих извне пакетов
 Self.out=None #буфер уходящих с коммутатора
 
 Class switch:
-Def init(self, pkt) 
+Def init(self, topo) 
 
-i=p.cam[pkt.dst]
-SwitchPort[i-1].out=pkt
+i=p.params.CAM[topo.dst]
+SwitchPort[i-1].out=topo
 #мб добавить маааленькую рандомную задержку
 
+class wiring:
+foreach cl in CAM:
+Swport[cl].in=cl.gen
+cl.sink=Swport[cl].out
 
 Вообще порядок:
 Опред кво портов и их парам(с б) 
@@ -58,3 +67,6 @@ SwitchPort[i-1].out=pkt
 
 Надо бы сделать так, чтобы в один момент пакеты отправляло опред число клиентов. 
 В pgen для каждого клиента дать свое распределение времени отправки
+
+
+'''
