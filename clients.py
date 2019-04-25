@@ -36,11 +36,24 @@ cl.sink=Swport[cl].out
 params.CAM и Port словари сделать глобальными. Возможно инициализировать их в спец классе build
 Класс switchport перевести в buffer, новый класс switcport  имеет два атрибута, равные экземплярам класса buffer
 Сделать класс switch, который соответственно будет сопоставлять порт входа.in с портом выхода.out:
+<<<<<<< HEAD
 
 
 Class clients:
 Def init(self, num, params.ports) 
 Num, params.ports - равноразмерные списки
+=======
+Class params:
+PORTS=10
+RATE=
+BUF=
+DISTRIB_SIZE=
+DISTRIB_TIME=
+
+Class clients:
+Def init(self, num, ports) 
+Self.Num=params.NUM, ports - равноразмерные списки, одному порту-список клиентов
+>>>>>>> 47c8000e5fef65cb7fb91aca9f5fcbbec7d614a1
 
 Class switchport(rate, bufsize):
 Self.in=None #буфер приходящих извне пакетов
