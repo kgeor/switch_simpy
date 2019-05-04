@@ -266,6 +266,18 @@ class RandomBrancher(object):
                     self.outs[i].put(pkt)
                 return
 
+            #####demo#####
+    def put(self, pkt,CAM):
+        #self.packets_rec += 1
+        #rand = random.random()
+        self.outs[CAM[pkt.dst]].put(pkt)
+        ###there is no good, call method from another class
+        for i in range(self.n_ports):
+            if rand < self.ranges[i]:
+                if self.outs[i]:  # A check to make sure the output has been assigned before we put to it
+                    self.outs[i].put(pkt)
+                return
+
 
 class FlowDemux(object):
         """ A demultiplexing element that splits packet streams by flow_id.
