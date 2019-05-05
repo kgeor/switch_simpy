@@ -57,21 +57,16 @@ class PacketGenerator(object):
         finish : number
             Stops generation at the finish time. Default is infinite
 
-генерация пакетов через время adist с заполнением полей пакета.
-Адресация  - по портам
+
     """
-    def __init__(self, env, id, port, ports, adist, sdist, initial_delay=0, finish=float("inf"), flow_id=0):
+    def __init__(self, env, id,  adist, sdist, initial_delay=0, finish=float("inf"), flow_id=0):
         self.id = id
         self.env = env
-        self.port = port #  порт, к которому присоединен генератор
-        self.ports = ports # список портов выхода
         self.adist = adist
         self.sdist = sdist
         self.initial_delay = initial_delay
         self.finish = finish
-        self.out = random.choice(ports)# сразу кидать в порт входа
-        while self.out == self.port:
-            self.out = random.choice(ports)
+        self.out = None
         self.packets_sent = 0
         self.action = env.process(self.run())  # starts the run() method as a SimPy process
         self.flow_id = flow_id
@@ -84,8 +79,9 @@ class PacketGenerator(object):
             # wait for next transmission
             yield self.env.timeout(self.adist())
             self.packets_sent += 1
-            p = Packet(self.env.now, self.sdist(), self.packets_sent, src=self.port, dst=self.out, flow_id=self.flow_id)
+            p = Packet(self.env.now, self.sdist(), self.packets_sent, src=self.id, flow_id=self.flow_id)
             self.out.put(p)
+
 
 #объединить надо бы с генератором в клиент-сервер
 # хотя можно просто на выходе с порта коммутатора получать данные и не париться
